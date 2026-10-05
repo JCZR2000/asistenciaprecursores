@@ -1,0 +1,108 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isMember(congId) {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/congregations/$(congId)/members/$(request.auth.uid));
+    }
+
+    function getMemberRole(congId) {
+      return get(/databases/$(database)/documents/congregations/$(congId)/members/$(request.auth.uid)).data.role;
+    }
+
+    function isSecretary(congId) {
+      return isMember(congId) && getMemberRole(congId) == 'secretary';
+    }
+
+    function isViewer(congId) {
+      return isMember(congId) && (getMemberRole(congId) == 'viewer' || getMemberRole(congId) == 'secretary');
+    }
+
+    match /congregations/{congId} {
+      // Any authenticated user can read if they are member
+      allow read: if isMember(congId);
+      // Only secretary can update congregation settings
+      allow update: if isSecretary(congId);
+      allow create: if isAuthenticated(); // For first-time congregation onboarding
+
+      // Members
+      match /members/{uid} {
+        allow read: if isMember(congId);
+        // Secretary can manage members; invited users can claim ONLY their matching role
+        allow write: if isSecretary(congId) || (
+          isAuthenticated() && 
+          request.auth.uid == uid && 
+          request.auth.token.email_verified == true &&
+          exists(/databases/$(database)/documents/congregations/$(congId)/invites/$(request.auth.token.email.lower())) &&
+          request.resource.data.role == get(/databases/$(database)/documents/congregations/$(congId)/invites/$(request.auth.token.email.lower())).data.role
+        );
+      }
+
+      // Invites (email lowercased)
+      match /invites/{emailLower} {
+        allow read: if isMember(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Pioneers
+      match /pioneers/{pioneerId} {
+        allow read: if isViewer(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Service Years
+      match /serviceYears/{yearId} {
+        allow read: if isViewer(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Pioneer Year details
+      match /pioneerYears/{pyId} {
+        allow read: if isViewer(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Monthly Reports
+      match /reports/{reportId} {
+        allow read: if isViewer(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Credit Entries
+      match /creditEntries/{entryId} {
+        allow read: if isViewer(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Private Notes: strictly Secretary
+      match /privateNotes/{pioneerId} {
+        allow read, write: if isSecretary(congId);
+      }
+
+      // Month locked status
+      match /monthStatus/{statusId} {
+        allow read: if isViewer(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Reviews (March and Year-End)
+      match /reviews/{reviewId} {
+        allow read: if isViewer(congId);
+        allow write: if isSecretary(congId);
+      }
+
+      // Audit Log: only Secretary can write; immutable trail
+      match /auditLog/{logId} {
+        allow read: if isSecretary(congId);
+        allow create: if isSecretary(congId);
+        allow update, delete: if false; // Immutable audit trail
+      }
+    }
+  }
+}

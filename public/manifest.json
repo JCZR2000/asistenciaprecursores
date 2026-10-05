@@ -1,0 +1,18 @@
+{
+  "name": "Precursores Regulares — Dashboard de Seguimiento",
+  "short_name": "Precursores",
+  "description": "Herramienta teocrática para la gestión y seguimiento del servicio de precursor regular",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

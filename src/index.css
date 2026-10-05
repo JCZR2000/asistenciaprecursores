@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 94%;
+    --accent-foreground: 222 47% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
+
+    --radius: 0.75rem;
+
+    /* Semantic status colors (Plan.md) */
+    --status-cumplido: 142 76% 36%;
+    --status-cumplido-fg: 142 76% 20%;
+    --status-cumplido-bg: 142 76% 94%;
+
+    --status-minimo: 217 91% 60%;
+    --status-minimo-fg: 217 91% 30%;
+    --status-minimo-bg: 217 91% 95%;
+
+    --status-cerca: 38 92% 50%;
+    --status-cerca-fg: 38 92% 25%;
+    --status-cerca-bg: 48 96% 93%;
+
+    --status-riesgo: 0 84% 60%;
+    --status-riesgo-fg: 0 84% 28%;
+    --status-riesgo-bg: 0 86% 96%;
+
+    /* Pace meter colors */
+    --pace-good: 142 71% 45%;
+    --pace-late: 38 92% 50%;
+    --pace-help: 0 84% 60%;
+    --pace-none: 215 16% 65%;
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217 33% 20%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 224 76% 48%;
+
+    /* Dark status colors */
+    --status-cumplido: 142 70% 45%;
+    --status-cumplido-fg: 142 70% 85%;
+    --status-cumplido-bg: 142 70% 15%;
+
+    --status-minimo: 217 91% 65%;
+    --status-minimo-fg: 217 91% 88%;
+    --status-minimo-bg: 217 91% 18%;
+
+    --status-cerca: 38 92% 55%;
+    --status-cerca-fg: 38 92% 85%;
+    --status-cerca-bg: 38 92% 16%;
+
+    --status-riesgo: 0 84% 65%;
+    --status-riesgo-fg: 0 84% 88%;
+    --status-riesgo-bg: 0 84% 18%;
+
+    --pace-good: 142 70% 50%;
+    --pace-late: 38 92% 55%;
+    --pace-help: 0 84% 65%;
+    --pace-none: 215 16% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Print utilities for official reports (March & Year-end) */
+@media print {
+  .no-print, nav, aside, header, button {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body, main {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+}
